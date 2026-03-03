@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/navbar";
@@ -13,13 +13,12 @@ import { toast } from "sonner";
 import { Film, Sparkles, AlertCircle, Star, Calendar, Users } from "lucide-react";
 import { ProtectedRoute } from "@/components/protected-route";
 
-export default function Analyze() {
+function AnalyzeContent() {
     const searchParams = useSearchParams();
     const [imdbId, setImdbId] = useState("");
     const [loading, setLoading] = useState(false);
     const [movieData, setMovieData] = useState(null);
 
-    // Auto-fill from query param (when clicking a featured movie)
     useEffect(() => {
         const id = searchParams.get("id");
         if (id) {
@@ -57,7 +56,6 @@ export default function Analyze() {
                 <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 pb-12">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                        {/* Analyze section */}
                         <div className="lg:col-span-4 space-y-6">
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
@@ -111,7 +109,6 @@ export default function Analyze() {
                             </Card>
                         </div>
 
-                        {/* Results section */}
                         <div className="lg:col-span-8">
                             <AnimatePresence mode="wait">
                                 {movie ? (
@@ -123,7 +120,6 @@ export default function Analyze() {
                                         transition={{ duration: 0.5 }}
                                         className="space-y-6"
                                     >
-                                        {/* Movie Hero Card */}
                                         <Card className="overflow-hidden border-border/50 shadow-lg">
                                             <div className="flex flex-col md:flex-row">
                                                 {movie.poster && (
@@ -182,7 +178,6 @@ export default function Analyze() {
                                             </div>
                                         </Card>
 
-                                        {/* AI Insights Card */}
                                         {insights && (
                                             <Card className="border-border/50 shadow-lg overflow-hidden relative">
                                                 <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
@@ -231,5 +226,13 @@ export default function Analyze() {
                 <Footer />
             </div>
         </ProtectedRoute>
+    );
+}
+
+export default function Analyze() {
+    return (
+        <Suspense fallback={null}>
+            <AnalyzeContent />
+        </Suspense>
     );
 }
