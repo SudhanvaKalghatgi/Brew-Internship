@@ -1,8 +1,7 @@
-// src/modules/auth/auth.controller.js
-
 import asyncHandler from "../../utils/asyncHandler.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import sendToken from "../../utils/sendToken.js";
+import { getCookieOptions } from "../../utils/cookieOptions.js";
 import env from "../../config/env.js";
 
 import {
@@ -34,12 +33,7 @@ export const login = asyncHandler(async (req, res) => {
 // Logout
 // ==============================
 export const logout = asyncHandler(async (req, res) => {
-  res.clearCookie("accessToken", {
-    httpOnly: true,
-    secure: env.nodeEnv === "production",
-    sameSite: "strict",
-    path: "/",
-  });
+  res.clearCookie("accessToken", getCookieOptions(0));
 
   return res
     .status(200)
