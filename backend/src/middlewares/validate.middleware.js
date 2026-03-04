@@ -25,13 +25,15 @@ const validate = (schema) => (req, res, next) => {
     next();
   } catch (error) {
     if (error.name === "ZodError") {
-      const formattedErrors = error.errors.map((err) => ({
+      const formattedErrors = error.issues.map((err) => ({
         field: err.path.join("."),
         message: err.message,
       }));
 
+      const firstErrorMessage = formattedErrors.length > 0 ? formattedErrors[0].message : "Validation failed";
+
       return next(
-        new ApiError(400, "Validation failed", true, formattedErrors)
+        new ApiError(400, firstErrorMessage, true, formattedErrors)
       );
     }
 

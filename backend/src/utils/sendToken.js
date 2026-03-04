@@ -13,9 +13,17 @@ const sendToken = (user, res, message = "Success") => {
 
   res.cookie("accessToken", token, getCookieOptions(maxAge));
 
+  let userData = user;
+  if (user.toObject) {
+    userData = user.toObject();
+  }
+  if (userData.password) {
+    delete userData.password;
+  }
+
   return res
     .status(200)
-    .json(new ApiResponse(200, message));
+    .json(new ApiResponse(200, message, { user: userData }));
 };
 
 export default sendToken;

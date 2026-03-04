@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,10 +11,18 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
+import { useAuth } from "@/context/auth-context";
 
 export default function Register() {
     const router = useRouter();
+    const { isLoggedIn } = useAuth();
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            router.push("/dashboard");
+        }
+    }, [isLoggedIn, router]);
     const [formData, setFormData] = useState({
         name: "",
         email: "",

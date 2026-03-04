@@ -8,8 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Zap } from "lucide-react";
 import { LiquidBackground } from "@/components/liquid-background";
 import { FeaturedMovies } from "@/components/featured-movies";
+import { useAuth } from "@/context/auth-context";
 
 export default function Home() {
+  const { isLoggedIn } = useAuth();
+
   return (
     <div className="flex flex-col min-h-screen relative">
       <LiquidBackground />
@@ -51,20 +54,22 @@ export default function Home() {
               transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 relative z-10"
             >
-              <Link href="/register">
+              <Link href={isLoggedIn ? "/dashboard" : "/register"}>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
                   <Button size="lg" className="font-semibold text-lg py-6 px-10 rounded-full shadow-[0_0_30px_rgba(52,211,153,0.4)] hover:shadow-[0_0_40px_rgba(52,211,153,0.6)] transition-shadow duration-300 gap-2 border border-primary/50 text-primary-foreground backdrop-blur-md">
-                    <Sparkles className="h-4 w-4" /> Get Started
+                    <Sparkles className="h-4 w-4" /> {isLoggedIn ? "Go to Dashboard" : "Get Started"}
                   </Button>
                 </motion.div>
               </Link>
-              <Link href="/login">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-                  <Button variant="outline" size="lg" className="font-semibold text-lg py-6 px-10 rounded-full gap-2 bg-white/40 dark:bg-black/10 backdrop-blur-md border border-white/60 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10 transition-colors duration-300 text-foreground">
-                    Sign In
-                  </Button>
-                </motion.div>
-              </Link>
+              {!isLoggedIn && (
+                <Link href="/login">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+                    <Button variant="outline" size="lg" className="font-semibold text-lg py-6 px-10 rounded-full gap-2 bg-white/40 dark:bg-black/10 backdrop-blur-md border border-white/60 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10 transition-colors duration-300 text-foreground">
+                      Sign In
+                    </Button>
+                  </motion.div>
+                </Link>
+              )}
             </motion.div>
           </motion.div>
         </div>

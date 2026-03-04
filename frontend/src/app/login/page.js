@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,8 +15,14 @@ import { useAuth } from "@/context/auth-context";
 
 export default function Login() {
     const router = useRouter();
-    const { setIsLoggedIn } = useAuth();
+    const { isLoggedIn, setIsLoggedIn } = useAuth();
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            router.push("/dashboard");
+        }
+    }, [isLoggedIn, router]);
     const [formData, setFormData] = useState({
         email: "",
         password: "",

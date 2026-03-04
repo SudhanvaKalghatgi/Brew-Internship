@@ -45,6 +45,7 @@ export const logout = asyncHandler(async (req, res) => {
 // ==============================
 export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
+  console.log("forgotPassword called for:", email);
 
   // generateResetToken should:
   // - find user
@@ -53,11 +54,20 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   // - set expiry
   // - return plain token OR null
   const resetToken = await generateResetToken(email);
+  console.log("resetToken generated:", !!resetToken);
 
   if (resetToken) {
-    const resetUrl = `${env.frontendUrl}/reset-password/${resetToken}`;
+    const clientOrigin = req.headers.origin || env.frontendUrl;
+    const resetUrl = `${clientOrigin}/reset-password/${resetToken}`;
+    console.log("Sending email to:", email, "with URL:", resetUrl);
 
-    await sendResetPasswordEmail(email, resetUrl);
+    try {
+      await sendResetPasswordEmail(email, resetUrl);
+      console.log("Email sent successfully");
+    } catch (e) {
+      console.error("Error in sendResetPasswordEmail:", e);
+      throw e;
+    }
   }
 
   // Always respond same way (no email leakage)
