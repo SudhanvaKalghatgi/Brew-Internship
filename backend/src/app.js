@@ -15,9 +15,16 @@ const app = express();
 app.use(helmet());
 
 // CORS
+const allowedOrigins = [env.frontendUrl, "http://localhost:3000"];
 app.use(
   cors({
-    origin: env.frontendUrl,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
